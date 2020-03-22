@@ -253,13 +253,13 @@ export default class VideoPlayer extends Component {
     _onScreenTouch() {
         let state = this.state;
         const time = new Date().getTime();
-        const delta =  time - state.lastScreenPress;
+       // const delta =  time - state.lastScreenPress;
 
-        if ( delta < 300 ) {
-            this.methods.toggleFullscreen();
-        }
-
-        this.methods.toggleControls();
+        // if ( delta < 300 ) {
+        //     this.methods.toggleFullscreen();
+        // } //Edited
+        state.paused = !this.state.paused;
+        //this.methods.toggleControls();
         state.lastScreenPress = time;
 
         this.setState( state );
@@ -286,7 +286,7 @@ export default class VideoPlayer extends Component {
      */
     setControlTimeout() {
         this.player.controlTimeout = setTimeout( ()=> {
-            this._hideControls();
+            //this._hideControls(); //Edited Never Pau Pause Button
         }, this.player.controlTimeoutDelay );
     }
 
@@ -666,7 +666,7 @@ export default class VideoPlayer extends Component {
      * Before mounting, init our seekbar and volume bar
      * pan responders.
      */
-    UNSAFE_componentWillMount() {
+    componentWillMount() {
         this.initSeekPanResponder();
         this.initVolumePanResponder();
     }
@@ -675,7 +675,7 @@ export default class VideoPlayer extends Component {
      * To allow basic playback management from the outside
      * we have to handle possible props changes to state changes
      */
-    UNSAFE_componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (this.state.paused !== nextProps.paused ) {
             this.setState({
                 paused: nextProps.paused
@@ -1022,7 +1022,7 @@ export default class VideoPlayer extends Component {
 
         let source = this.state.paused === true ? require( './assets/img/play.png' ) : require( './assets/img/pause.png' );
         return this.renderControl(
-            <Image source={ source } />,
+            <Image source={ source } style={this.state.paused === true ? {marginLeft:2}:{marginLeft:0}}/>,
             this.methods.togglePlayPause,
             styles.controls.playPause
         );
@@ -1210,7 +1210,8 @@ const styles = {
             width: null,
         },
         vignette: {
-            resizeMode: 'stretch'
+            //resizeMode: 'cover'
+            opacity: 0 //Edited
         },
         control: {
             padding: 16,
@@ -1261,8 +1262,10 @@ const styles = {
         },
         playPause: {
             position: 'relative',
-            width: 80,
-            zIndex: 0
+            width: 32,
+            zIndex: 0,
+            padding: 10,
+            backgroundColor: '#b30704' //Edited
         },
         title: {
             alignItems: 'center',
